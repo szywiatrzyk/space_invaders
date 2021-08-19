@@ -55,7 +55,7 @@ public class EnemyBehaviour : MonoBehaviour
 
         if (collision.tag == "wall")
         {
-            gameMenager.EndGame();
+            gameMenager.EndGame(1);
         }
 
     }
@@ -63,8 +63,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void OnDestroy()
     {
-        //GameObject contr = GameObject.FindGameObjectWithTag("controler");
-        //contr.GetComponent<EnemyControler>().DeleteEnemyFromGrid(gridPos[0], gridPos[1]);
+        GameObject contr = GameObject.FindGameObjectWithTag("controler");
+        contr.GetComponent<EnemyManager>().CheckGrid();
         gameMenager.ScoreChange("EnemyDestruction");
     }
     public void MovementAction(string mode,float length)

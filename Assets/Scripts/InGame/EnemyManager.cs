@@ -26,6 +26,7 @@ public class EnemyManager : MonoBehaviour
     {
         numOfEnemies = howManyEnemyInColumn * howManyEnemyInRow;
         currentMovementDelay = enemyMovementDelay;
+        currentNumOfEnemies = numOfEnemies;
         pause = false;
         moveDirection = true;
         grid = new int[sizeX,sizeY];
@@ -81,21 +82,14 @@ public class EnemyManager : MonoBehaviour
         {
             yield return new WaitForSeconds(currentMovementDelay);
 
-            int count = 0;
-            for (int i = 0; i < sizeX - 1; i++)
-            {
-                for (int j = 0; j < sizeY; j++)
-                {
-                    if (grid[i, j] != 0) count++;
 
-                }
-            }
-            currentNumOfEnemies = count;
 
-            
+         
+
+
+
             currentMovementDelay =Mathf.Clamp((enemyMovementDelay * (float)((float)currentNumOfEnemies / (float)numOfEnemies)), 0.2f,3.0f);
-            Debug.Log(currentNumOfEnemies + "   " + numOfEnemies);
-            Debug.Log(currentMovementDelay);
+
           
 
             float multiply = (currentNumOfEnemies / numOfEnemies);
@@ -112,7 +106,7 @@ public class EnemyManager : MonoBehaviour
             if (currentNumOfEnemies <= 0 && !pause ) 
             {
                 pause = true;
-                GameObject.FindGameObjectWithTag("gameManager").GetComponent<GameManager>().EndGame();
+                GameObject.FindGameObjectWithTag("gameManager").GetComponent<GameManager>().EndGame(2);
                 
             }
 
@@ -168,7 +162,7 @@ public class EnemyManager : MonoBehaviour
 
     void MovementAction(string mode)
     {
-        CheckGrid();
+        
         GameObject[] enemyList = GameObject.FindGameObjectsWithTag("enemy");
         GridUpdate(mode);
         foreach (GameObject enemy in enemyList)
@@ -233,20 +227,25 @@ public class EnemyManager : MonoBehaviour
         grid[x, y] = 0;
     }
 
-    private void CheckGrid()
+    public void CheckGrid()
     {
 
         GameObject[] enemyList = GameObject.FindGameObjectsWithTag("enemy");
 
         int[,] GridCor = new int[sizeX, sizeY];
 
+        int count = 0;
+
         foreach (GameObject enemy in enemyList)
         {
             int x =  enemy.GetComponent<EnemyBehaviour>().gridPos[0];
             int y = enemy.GetComponent<EnemyBehaviour>().gridPos[1];
             GridCor[x, y] = 1;
-            
+            count++;
         }
+
+        currentNumOfEnemies = count;
+        Debug.Log(currentNumOfEnemies);
 
         for (int i = 0; i < sizeX - 1; i++)
         {

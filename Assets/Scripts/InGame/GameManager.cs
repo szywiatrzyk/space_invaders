@@ -45,11 +45,19 @@ public class GameManager : MonoBehaviour
 
 
 
-    public void EndGame() 
+    public void EndGame(int mode) 
     {
+
+        if (mode == 2)
+        { 
+
+        }
         int scoreTemp = score; 
         EndScreen.gameObject.SetActive(true);
-
+        if (mode == 2)
+        {
+            EndScreen.transform.Find("EndText").GetComponent<Text>().text = "You win!";
+        }
         string J = PlayerPrefs.GetString("HighscoreTable");
         HighScoreTable loadedRecords = JsonUtility.FromJson<HighScoreTable>(J);
         List<int> recordList = loadedRecords.list;
@@ -63,9 +71,12 @@ public class GameManager : MonoBehaviour
         if (recordList.Find(x => x == scoreTemp) == scoreTemp)
         {
             int pos = recordList.IndexOf(scoreTemp);
-            Transform betterscore = EndScreen.transform.Find("Betterscore");
-            betterscore.gameObject.gameObject.SetActive(true);
-            betterscore.gameObject.GetComponent<Text>().text = "#" + (pos + 1).ToString()+" Place!!!";
+            if (pos != -1)
+            {
+                Transform betterscore = EndScreen.transform.Find("Betterscore");
+                betterscore.gameObject.gameObject.SetActive(true);
+                betterscore.gameObject.GetComponent<Text>().text = "#" + (pos + 1).ToString() + " Place!!!";
+            }
         }
 
         Transform scoreContainer = EndScreen.transform.Find("Score");
@@ -75,7 +86,7 @@ public class GameManager : MonoBehaviour
         string jn = JsonUtility.ToJson(table);
         PlayerPrefs.SetString("HighscoreTable", jn);
         PlayerPrefs.Save();
-        Debug.Log(PlayerPrefs.GetString("HighscoreTable"));
+        
     }
 
     private class HighScoreTable

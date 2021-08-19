@@ -19,29 +19,25 @@ public class HighscoreManager : MonoBehaviour
         ScoreContainer = transform.Find("ScoreContainer");
         Record = ScoreContainer.Find("HighScoreRecord");
         Record.gameObject.SetActive(false);
-
+        
         string J = PlayerPrefs.GetString("HighscoreTable");
+        
+        if (string.IsNullOrEmpty(J))
+        {
+            RecordList = new List<int>();
+            for(int i =0; i<10; i++) RecordList.Add(0);
+     
+            HighScoreTable table = new HighScoreTable { list = RecordList };
+            J = JsonUtility.ToJson(table);
+            PlayerPrefs.SetString("HighscoreTable", J);
+            PlayerPrefs.Save();
+            J = PlayerPrefs.GetString("HighscoreTable");
+
+        }
         HighScoreTable loadedRecords = JsonUtility.FromJson<HighScoreTable>(J);
 
-        //RecordList = new List<int>();
-        //RecordList.Add(1);
-        //RecordList.Add(0);
-        //RecordList.Add(0);
-        //RecordList.Add(4);
-        //RecordList.Add(0);
-        //RecordList.Add(0);
-        //RecordList.Add(0);
-        //RecordList.Add(0);
-        //RecordList.Add(0);
-        //RecordList.Add(0);
-        //RecordList.Sort((p1, p2) => p2.CompareTo(p1));
-        //HighScoreTable table = new HighScoreTable { list = RecordList };
-        //string jn = JsonUtility.ToJson(table);
-        //PlayerPrefs.SetString("HighscoreTable", jn);
-        //PlayerPrefs.Save();
-        //Debug.Log(PlayerPrefs.GetString("HighscoreTable"));
-        
-        
+
+
         foreach ( int a in loadedRecords.list)
         {
             BuildRecord(a, RecordList_Transform);
