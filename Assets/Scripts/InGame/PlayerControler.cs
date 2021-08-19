@@ -12,6 +12,7 @@ public class PlayerControler : MonoBehaviour
     // shoot 
     public GameObject bullet;
     public float reloadTime;
+    private float atackSpeed;
     public bool canShoot;
     Coroutine shooting;
 
@@ -19,6 +20,7 @@ public class PlayerControler : MonoBehaviour
 
     void Start()
     {
+        atackSpeed = reloadTime;
         gameManager = GameObject.FindGameObjectWithTag("gameManager").GetComponent<GameManager>();
         movementLeft = false;
         movementRight = false;
@@ -36,11 +38,24 @@ public class PlayerControler : MonoBehaviour
     {
         while (canShoot)
         {
-            yield return new WaitForSeconds(reloadTime);
+            yield return new WaitForSeconds(atackSpeed);
             Instantiate(bullet, transform.position, Quaternion.identity);
         }
     }
 
+    public void AddShootBoost()
+    {
+        StartCoroutine(ShootBoost());
+    }
+    public IEnumerator ShootBoost() 
+    {
+        StopCoroutine(shooting);
+        atackSpeed =  reloadTime/4f;
+        shooting = StartCoroutine(Shoot());
+        yield return new WaitForSeconds(5);
+        atackSpeed = reloadTime;
+        
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

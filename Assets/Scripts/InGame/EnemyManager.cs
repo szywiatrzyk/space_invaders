@@ -245,7 +245,7 @@ public class EnemyManager : MonoBehaviour
         }
 
         currentNumOfEnemies = count;
-        Debug.Log(currentNumOfEnemies);
+        
 
         for (int i = 0; i < sizeX - 1; i++)
         {
