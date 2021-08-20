@@ -52,10 +52,6 @@ public class GameManager : MonoBehaviour
         if (isEndGame == false)
         {
             isEndGame = true;
-            if (mode == 2)
-            {
-
-            }
             int scoreTemp = score;
             EndScreen.gameObject.SetActive(true);
             if (mode == 2)
