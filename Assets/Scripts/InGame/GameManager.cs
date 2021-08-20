@@ -9,10 +9,12 @@ public class GameManager : MonoBehaviour
     private int score;
     private int enemyInColumn;
     public GameObject enemyControler;
-    public GameObject EndScreen; 
+    public GameObject EndScreen;
+    private bool isEndGame;
 
     void Awake()
     {
+        isEndGame = false;
         score = 0;
     }
     private void Start()
@@ -47,46 +49,48 @@ public class GameManager : MonoBehaviour
 
     public void EndGame(int mode) 
     {
-
-        if (mode == 2)
-        { 
-
-        }
-        int scoreTemp = score; 
-        EndScreen.gameObject.SetActive(true);
-        if (mode == 2)
+        if (isEndGame == false)
         {
-            EndScreen.transform.Find("EndText").GetComponent<Text>().text = "You win!";
-        }
-        string J = PlayerPrefs.GetString("HighscoreTable");
-        HighScoreTable loadedRecords = JsonUtility.FromJson<HighScoreTable>(J);
-        List<int> recordList = loadedRecords.list;
-
-        recordList.Add(scoreTemp);
-        recordList.Sort((p1, p2) => p2.CompareTo(p1));
-        recordList.RemoveAt(recordList.Count - 1);
-
-
-
-        if (recordList.Find(x => x == scoreTemp) == scoreTemp)
-        {
-            int pos = recordList.IndexOf(scoreTemp);
-            if (pos != -1)
+            isEndGame = true;
+            if (mode == 2)
             {
-                Transform betterscore = EndScreen.transform.Find("Betterscore");
-                betterscore.gameObject.gameObject.SetActive(true);
-                betterscore.gameObject.GetComponent<Text>().text = "#" + (pos + 1).ToString() + " Place!!!";
+
             }
+            int scoreTemp = score;
+            EndScreen.gameObject.SetActive(true);
+            if (mode == 2)
+            {
+                EndScreen.transform.Find("EndText").GetComponent<Text>().text = "You win!";
+            }
+            string J = PlayerPrefs.GetString("HighscoreTable");
+            HighScoreTable loadedRecords = JsonUtility.FromJson<HighScoreTable>(J);
+            List<int> recordList = loadedRecords.list;
+
+            recordList.Add(scoreTemp);
+            recordList.Sort((p1, p2) => p2.CompareTo(p1));
+            recordList.RemoveAt(recordList.Count - 1);
+
+
+
+            if (recordList.Find(x => x == scoreTemp) == scoreTemp)
+            {
+                int pos = recordList.IndexOf(scoreTemp);
+                if (pos != -1)
+                {
+                    Transform betterscore = EndScreen.transform.Find("Betterscore");
+                    betterscore.gameObject.gameObject.SetActive(true);
+                    betterscore.gameObject.GetComponent<Text>().text = "#" + (pos + 1).ToString() + " Place!!!";
+                }
+            }
+
+            Transform scoreContainer = EndScreen.transform.Find("Score");
+            scoreContainer.gameObject.GetComponent<Text>().text = "Your score: \n" + scoreTemp;
+
+            HighScoreTable table = new HighScoreTable { list = recordList };
+            string jn = JsonUtility.ToJson(table);
+            PlayerPrefs.SetString("HighscoreTable", jn);
+            PlayerPrefs.Save();
         }
-
-        Transform scoreContainer = EndScreen.transform.Find("Score");
-        scoreContainer.gameObject.GetComponent<Text>().text = "Your score: \n" + scoreTemp;
-
-        HighScoreTable table = new HighScoreTable { list = recordList };
-        string jn = JsonUtility.ToJson(table);
-        PlayerPrefs.SetString("HighscoreTable", jn);
-        PlayerPrefs.Save();
-        
     }
 
     private class HighScoreTable
